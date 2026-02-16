@@ -163,10 +163,46 @@ function initReportControls() {
     const reportDate = document.getElementById("report-date");
     reportDate.value = dailyDate;
 
+    // initialise month picker to current month
+    const today = new Date();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    document.getElementById("report-month").value = `${today.getFullYear()}-${mm}`;
+
+    // initialise quarter year selector (current year ± 2)
+    const qYearSel = document.getElementById("report-quarter-year");
+    const curYear = today.getFullYear();
+    for (let y = curYear - 2; y <= curYear + 1; y++) {
+        const opt = document.createElement("option");
+        opt.value = y;
+        opt.textContent = `${y}年`;
+        if (y === curYear) opt.selected = true;
+        qYearSel.appendChild(opt);
+    }
+    // pre-select current quarter
+    const curQ = Math.floor(today.getMonth() / 3) + 1;
+    document.getElementById("report-quarter-q").value = curQ;
+
+    // initialise range pickers to current month
+    document.getElementById("report-range-start").value =
+        `${today.getFullYear()}-${mm}-01`;
+    document.getElementById("report-range-end").value = dailyDate;
+
+    const pickers = ["report-date-picker", "report-week-picker",
+                     "report-month-picker", "report-quarter-picker",
+                     "report-range-picker"];
+    const typePickerMap = {
+        daily: "report-date-picker",
+        weekly: "report-week-picker",
+        monthly: "report-month-picker",
+        quarterly: "report-quarter-picker",
+        range: "report-range-picker",
+    };
+
     typeSelect.addEventListener("change", () => {
-        const isDaily = typeSelect.value === "daily";
-        document.getElementById("report-date-picker").classList.toggle("hidden", !isDaily);
-        document.getElementById("report-week-picker").classList.toggle("hidden", isDaily);
+        const active = typePickerMap[typeSelect.value];
+        pickers.forEach(id =>
+            document.getElementById(id).classList.toggle("hidden", id !== active)
+        );
     });
 
     document.getElementById("report-generate").addEventListener("click", generateReport);
@@ -182,8 +218,19 @@ async function generateReport() {
     if (type === "daily") {
         const d = document.getElementById("report-date").value;
         data = await api(`/api/report/daily?date=${d}`);
-    } else {
+    } else if (type === "weekly") {
         data = await api(`/api/report/weekly?year=${weeklyYear}&week=${weeklyWeek}`);
+    } else if (type === "monthly") {
+        const [year, month] = document.getElementById("report-month").value.split("-");
+        data = await api(`/api/report/monthly?year=${year}&month=${parseInt(month)}`);
+    } else if (type === "quarterly") {
+        const year = document.getElementById("report-quarter-year").value;
+        const quarter = document.getElementById("report-quarter-q").value;
+        data = await api(`/api/report/quarterly?year=${year}&quarter=${quarter}`);
+    } else {
+        const start = document.getElementById("report-range-start").value;
+        const end = document.getElementById("report-range-end").value;
+        data = await api(`/api/report/range?start=${start}&end=${end}`);
     }
     reportMarkdown = data.content;
     const html = typeof marked !== "undefined" ? marked.parse(data.content) : `<pre>${esc(data.content)}</pre>`;

@@ -17,6 +17,11 @@
 
     python main.py report daily
     python main.py report weekly
+    python main.py report monthly
+    python main.py report monthly --month 2026-02
+    python main.py report quarterly
+    python main.py report quarterly --quarter 2026-Q1
+    python main.py report range --start 2026-01-01 --end 2026-01-31
 """
 
 import click
@@ -435,6 +440,59 @@ def report_weekly(week_str):
     content = gen.generate_weekly_report(year, week)
     click.echo(content)
     click.echo(f"\n报告已保存至 reports/weekly/{year}-W{week:02d}.md")
+
+
+@report.command("monthly")
+@click.option("--month", "month_str", default=None,
+              help="月份 YYYY-MM, 默认本月")
+def report_monthly(month_str):
+    """生成月报"""
+    if month_str:
+        parts = month_str.split("-")
+        year, month = int(parts[0]), int(parts[1])
+    else:
+        today = date.today()
+        year, month = today.year, today.month
+    gen = ReportGenerator()
+    content = gen.generate_monthly_report(year, month)
+    click.echo(content)
+    click.echo(f"\n报告已保存至 reports/monthly/{year}-{month:02d}.md")
+
+
+@report.command("quarterly")
+@click.option("--quarter", "quarter_str", default=None,
+              help="季度 YYYY-QN (如 2026-Q1), 默认本季度")
+def report_quarterly(quarter_str):
+    """生成季报"""
+    if quarter_str:
+        parts = quarter_str.split("-Q")
+        year, quarter = int(parts[0]), int(parts[1])
+    else:
+        today = date.today()
+        year = today.year
+        quarter = (today.month - 1) // 3 + 1
+    gen = ReportGenerator()
+    content = gen.generate_quarterly_report(year, quarter)
+    click.echo(content)
+    click.echo(f"\n报告已保存至 reports/quarterly/{year}-Q{quarter}.md")
+
+
+@report.command("range")
+@click.option("--start", "start_str", required=True,
+              help="开始日期 YYYY-MM-DD")
+@click.option("--end", "end_str", required=True,
+              help="结束日期 YYYY-MM-DD")
+def report_range(start_str, end_str):
+    """生成自定义区间报告"""
+    start = date.fromisoformat(start_str)
+    end = date.fromisoformat(end_str)
+    if start > end:
+        click.echo("错误: 开始日期不能晚于结束日期", err=True)
+        raise SystemExit(1)
+    gen = ReportGenerator()
+    content = gen.generate_range_report(start, end)
+    click.echo(content)
+    click.echo(f"\n报告已保存至 reports/range/{start_str}_{end_str}.md")
 
 
 # ======================== 入口 ========================

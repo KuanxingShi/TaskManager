@@ -265,5 +265,32 @@ def report_weekly():
     return jsonify({"content": content})
 
 
+@app.route("/api/report/monthly")
+def report_monthly():
+    year = request.args.get("year", type=int)
+    month = request.args.get("month", type=int)
+    gen = ReportGenerator()
+    content = gen.generate_monthly_report(year, month)
+    return jsonify({"content": content})
+
+
+@app.route("/api/report/quarterly")
+def report_quarterly():
+    year = request.args.get("year", type=int)
+    quarter = request.args.get("quarter", type=int)
+    gen = ReportGenerator()
+    content = gen.generate_quarterly_report(year, quarter)
+    return jsonify({"content": content})
+
+
+@app.route("/api/report/range")
+def report_range():
+    start = date.fromisoformat(request.args.get("start"))
+    end = date.fromisoformat(request.args.get("end"))
+    gen = ReportGenerator()
+    content = gen.generate_range_report(start, end)
+    return jsonify({"content": content})
+
+
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=5001)

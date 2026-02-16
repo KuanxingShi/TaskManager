@@ -59,7 +59,9 @@ GOAL_RE = re.compile(r"^\d+\.\s*\[([ x])\]\s*(.+)$")
 
 def ensure_dirs():
     for d in [DATA_DIR / "daily", DATA_DIR / "weekly",
-              REPORTS_DIR / "daily", REPORTS_DIR / "weekly"]:
+              REPORTS_DIR / "daily", REPORTS_DIR / "weekly",
+              REPORTS_DIR / "monthly", REPORTS_DIR / "quarterly",
+              REPORTS_DIR / "range"]:
         d.mkdir(parents=True, exist_ok=True)
 
 
@@ -407,6 +409,18 @@ def get_daily_report_path(d: date) -> Path:
 
 def get_weekly_report_path(year: int, week: int) -> Path:
     return REPORTS_DIR / "weekly" / f"{year}-W{week:02d}.md"
+
+
+def get_monthly_report_path(year: int, month: int) -> Path:
+    return REPORTS_DIR / "monthly" / f"{year}-{month:02d}.md"
+
+
+def get_quarterly_report_path(year: int, quarter: int) -> Path:
+    return REPORTS_DIR / "quarterly" / f"{year}-Q{quarter}.md"
+
+
+def get_range_report_path(start: date, end: date) -> Path:
+    return REPORTS_DIR / "range" / f"{start.isoformat()}_{end.isoformat()}.md"
 
 
 def save_report(path: Path, content: str):

@@ -256,6 +256,12 @@ input, select, textarea { font-family: inherit; }
     flex-wrap: wrap;
 }
 
+#report-range-picker {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 /* ========== Buttons ========== */
 .btn-primary {
     background: var(--accent-yellow);
