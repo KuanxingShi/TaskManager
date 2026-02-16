@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskManager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="app">
+    <!-- ====== 侧边栏 ====== -->
+    <aside class="sidebar">
+        <div class="logo">
+            <span class="logo-icon">&#9745;</span>
+            <span>TaskManager</span>
+        </div>
+        <nav>
+            <a href="#" class="nav-item active" data-page="daily">
+                <span class="nav-icon">D</span>每日任务
+            </a>
+            <a href="#" class="nav-item" data-page="weekly">
+                <span class="nav-icon">W</span>每周任务
+            </a>
+            <a href="#" class="nav-item" data-page="report">
+                <span class="nav-icon">R</span>报告
+            </a>
+        </nav>
+    </aside>
+
+    <!-- ====== 主内容 ====== -->
+    <main class="main">
+
+        <!-- ===== 每日任务页 ===== -->
+        <section id="page-daily" class="page active">
+            <div class="page-header">
+                <h1>每日任务</h1>
+                <div class="date-nav">
+                    <button class="btn-icon" id="daily-prev" title="前一天">&laquo;</button>
+                    <input type="date" id="daily-date">
+                    <button class="btn-icon" id="daily-next" title="后一天">&raquo;</button>
+                    <button class="btn-icon" id="daily-today" title="今天">今天</button>
+                </div>
+                <button class="btn-primary" id="daily-add-btn">+ 添加任务</button>
+            </div>
+            <div class="stats-bar" id="daily-stats"></div>
+            <div class="quadrant-grid" id="daily-tasks">
+                <div class="quadrant" data-priority="紧急重要">
+                    <div class="quadrant-header qi-urgent-important">
+                        <span class="qi-label">紧急重要</span>
+                        <span class="qi-count" id="daily-q-ui-count">0</span>
+                    </div>
+                    <div class="quadrant-body" data-priority="紧急重要"></div>
+                </div>
+                <div class="quadrant" data-priority="紧急不重要">
+                    <div class="quadrant-header qi-urgent-not-important">
+                        <span class="qi-label">紧急不重要</span>
+                        <span class="qi-count" id="daily-q-uni-count">0</span>
+                    </div>
+                    <div class="quadrant-body" data-priority="紧急不重要"></div>
+                </div>
+                <div class="quadrant" data-priority="不紧急重要">
+                    <div class="quadrant-header qi-not-urgent-important">
+                        <span class="qi-label">不紧急重要</span>
+                        <span class="qi-count" id="daily-q-nui-count">0</span>
+                    </div>
+                    <div class="quadrant-body" data-priority="不紧急重要"></div>
+                </div>
+                <div class="quadrant" data-priority="不紧急不重要">
+                    <div class="quadrant-header qi-not-urgent-not-important">
+                        <span class="qi-label">不紧急不重要</span>
+                        <span class="qi-count" id="daily-q-nuni-count">0</span>
+                    </div>
+                    <div class="quadrant-body" data-priority="不紧急不重要"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 每周任务页 ===== -->
+        <section id="page-weekly" class="page">
+            <div class="page-header">
+                <h1>每周任务</h1>
+                <div class="date-nav">
+                    <button class="btn-icon" id="weekly-prev" title="上一周">&laquo;</button>
+                    <span id="weekly-label" class="week-label"></span>
+                    <button class="btn-icon" id="weekly-next" title="下一周">&raquo;</button>
+                    <button class="btn-icon" id="weekly-current" title="本周">本周</button>
+                </div>
+                <button class="btn-primary" id="weekly-add-btn">+ 添加任务</button>
+            </div>
+            <div class="stats-bar" id="weekly-stats"></div>
+
+            <!-- 本周目标 -->
+            <div class="goals-section">
+                <div class="section-header">
+                    <h2>本周目标</h2>
+                    <button class="btn-sm" id="weekly-goal-add-btn">+ 添加目标</button>
+                </div>
+                <div id="weekly-goals"></div>
+                <div id="goal-add-form" class="inline-form hidden">
+                    <input type="text" id="goal-input" placeholder="输入目标描述..." class="input">
+                    <button class="btn-primary btn-sm" id="goal-submit">添加</button>
+                    <button class="btn-sm" id="goal-cancel">取消</button>
+                </div>
+            </div>
+
+            <div class="quadrant-grid" id="weekly-tasks">
+                <div class="quadrant" data-priority="紧急重要">
+                    <div class="quadrant-header qi-urgent-important">
+                        <span class="qi-label">紧急重要</span>
+                        <span class="qi-count" id="weekly-q-ui-count">0</span>
+                    </div>
+                    <div class="quadrant-body" data-priority="紧急重要"></div>
+                </div>
+                <div class="quadrant" data-priority="紧急不重要">
+                    <div class="quadrant-header qi-urgent-not-important">
+                        <span class="qi-label">紧急不重要</span>
+                        <span class="qi-count" id="weekly-q-uni-count">0</span>
+                    </div>
+                    <div class="quadrant-body" data-priority="紧急不重要"></div>
+                </div>
+                <div class="quadrant" data-priority="不紧急重要">
+                    <div class="quadrant-header qi-not-urgent-important">
+                        <span class="qi-label">不紧急重要</span>
+                        <span class="qi-count" id="weekly-q-nui-count">0</span>
+                    </div>
+                    <div class="quadrant-body" data-priority="不紧急重要"></div>
+                </div>
+                <div class="quadrant" data-priority="不紧急不重要">
+                    <div class="quadrant-header qi-not-urgent-not-important">
+                        <span class="qi-label">不紧急不重要</span>
+                        <span class="qi-count" id="weekly-q-nuni-count">0</span>
+                    </div>
+                    <div class="quadrant-body" data-priority="不紧急不重要"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 报告页 ===== -->
+        <section id="page-report" class="page">
+            <div class="page-header">
+                <h1>报告</h1>
+                <div class="report-controls">
+                    <select id="report-type" class="select">
+                        <option value="daily">日报</option>
+                        <option value="weekly">周报</option>
+                    </select>
+                    <div id="report-date-picker">
+                        <input type="date" id="report-date">
+                    </div>
+                    <div id="report-week-picker" class="hidden">
+                        <span id="report-week-label" class="week-label"></span>
+                    </div>
+                    <button class="btn-primary" id="report-generate">生成报告</button>
+                    <button class="btn-sm" id="report-copy" title="复制 Markdown">复制</button>
+                </div>
+            </div>
+            <div class="report-content" id="report-content">
+                <p class="empty-hint">点击「生成报告」查看日报或周报</p>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- ====== 添加任务弹窗 ====== -->
+<div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="modal-title">添加任务</h2>
+            <button class="btn-close" id="modal-close">&times;</button>
+        </div>
+        <form id="task-form" class="modal-body">
+            <div class="form-group">
+                <label>任务名称 <span class="required">*</span></label>
+                <input type="text" id="form-title" class="input" required placeholder="输入任务名称">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>四象限分类</label>
+                    <select id="form-priority" class="select">
+                        <option value="紧急重要" selected>紧急重要</option>
+                        <option value="紧急不重要">紧急不重要</option>
+                        <option value="不紧急重要">不紧急重要</option>
+                        <option value="不紧急不重要">不紧急不重要</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>标签</label>
+                    <input type="text" id="form-tags" class="input" placeholder="逗号分隔, 如: 开发,前端">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>描述</label>
+                <textarea id="form-desc" class="input textarea" rows="2" placeholder="任务描述 (可选)"></textarea>
+            </div>
+            <div class="form-group hidden" id="form-due-group">
+                <label>截止日期</label>
+                <input type="text" id="form-due" class="input" placeholder="如: 02/05">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="modal-cancel-btn">取消</button>
+                <button type="submit" class="btn-primary">确定</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toast 通知 -->
+<div class="toast hidden" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
