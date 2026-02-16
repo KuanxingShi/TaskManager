@@ -152,8 +152,8 @@ def weekly_list():
 @app.route("/api/weekly", methods=["POST"])
 def weekly_add():
     data = request.json
-    year = data.get("year", type=int) if isinstance(data.get("year"), str) else data.get("year")
-    week = data.get("week", type=int) if isinstance(data.get("week"), str) else data.get("week")
+    year = int(data.get("year")) if data.get("year") is not None else None
+    week = int(data.get("week")) if data.get("week") is not None else None
     mgr = WeeklyManager(year, week)
     tags = data.get("tags", [])
     if isinstance(tags, str):
@@ -285,8 +285,17 @@ def report_quarterly():
 
 @app.route("/api/report/range")
 def report_range():
-    start = date.fromisoformat(request.args.get("start"))
-    end = date.fromisoformat(request.args.get("end"))
+    start_str = request.args.get("start")
+    end_str = request.args.get("end")
+    if not start_str or not end_str:
+        return jsonify({"error": "缺少必要参数: start 和 end"}), 400
+    try:
+        start = date.fromisoformat(start_str)
+        end = date.fromisoformat(end_str)
+    except ValueError:
+        return jsonify({"error": "日期格式无效，请使用 YYYY-MM-DD 格式"}), 400
+    if start > end:
+        return jsonify({"error": "开始日期不能晚于结束日期"}), 400
     gen = ReportGenerator()
     content = gen.generate_range_report(start, end)
     return jsonify({"content": content})

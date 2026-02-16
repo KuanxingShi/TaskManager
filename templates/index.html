@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Bebas+Neue&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
+    <script>(function(){var t=localStorage.getItem('taskmanager-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
 
@@ -29,6 +30,35 @@
                 <span class="nav-icon">R</span>报告
             </a>
         </nav>
+
+        <!-- 主题切换 -->
+        <div class="theme-switcher">
+            <button class="theme-toggle-btn" id="theme-toggle" title="切换主题风格">
+                <span class="theme-dot-preview"></span>
+                <span class="theme-toggle-label">主题风格</span>
+            </button>
+            <div class="theme-panel" id="theme-panel">
+                <div class="theme-panel-title">选择主题</div>
+                <div class="theme-options">
+                    <button class="theme-opt" data-theme="dark">
+                        <span class="theme-preview dark-preview"></span>
+                        <span>极夜黑</span>
+                    </button>
+                    <button class="theme-opt" data-theme="light">
+                        <span class="theme-preview light-preview"></span>
+                        <span>简约白</span>
+                    </button>
+                    <button class="theme-opt" data-theme="nord">
+                        <span class="theme-preview nord-preview"></span>
+                        <span>北欧蓝</span>
+                    </button>
+                    <button class="theme-opt" data-theme="sakura">
+                        <span class="theme-preview sakura-preview"></span>
+                        <span>樱花粉</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </aside>
 
     <!-- ====== 主内容 ====== -->
@@ -233,6 +263,7 @@
 <div class="toast hidden" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
 <script src="/static/app.js"></script>
 </body>
 </html>

@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     weeklyYear = iso.year;
     weeklyWeek = iso.week;
 
+    initTheme();
     initNav();
     initDailyControls();
     initWeeklyControls();
@@ -22,6 +23,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadDaily();
 });
+
+/* ========== Theme Switcher ========== */
+const THEMES = {
+    dark:   '极夜黑',
+    light:  '简约白',
+    nord:   '北欧蓝',
+    sakura: '樱花粉',
+};
+
+function initTheme() {
+    const saved = localStorage.getItem('taskmanager-theme') || 'dark';
+    applyTheme(saved);
+
+    const toggleBtn = document.getElementById('theme-toggle');
+    const panel = document.getElementById('theme-panel');
+
+    toggleBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        panel.classList.toggle('visible');
+    });
+
+    document.querySelectorAll('.theme-opt').forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
+            const theme = btn.dataset.theme;
+            applyTheme(theme);
+            localStorage.setItem('taskmanager-theme', theme);
+            panel.classList.remove('visible');
+        });
+    });
+
+    document.addEventListener('click', () => {
+        panel.classList.remove('visible');
+    });
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.querySelectorAll('.theme-opt').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === theme);
+    });
+    const labelEl = document.querySelector('.theme-toggle-label');
+    if (labelEl) labelEl.textContent = THEMES[theme] || '主题风格';
+}
 
 /* ========== Navigation ========== */
 function initNav() {
@@ -233,7 +278,13 @@ async function generateReport() {
         data = await api(`/api/report/range?start=${start}&end=${end}`);
     }
     reportMarkdown = data.content;
-    const html = typeof marked !== "undefined" ? marked.parse(data.content) : `<pre>${esc(data.content)}</pre>`;
+    let html;
+    if (typeof marked !== "undefined") {
+        const rawHtml = marked.parse(data.content);
+        html = typeof DOMPurify !== "undefined" ? DOMPurify.sanitize(rawHtml) : rawHtml;
+    } else {
+        html = `<pre>${esc(data.content)}</pre>`;
+    }
     document.getElementById("report-content").innerHTML = html;
     toast("报告已生成");
 }
@@ -643,6 +694,15 @@ async function api(url, method = "GET", body = null) {
         opts.body = JSON.stringify(body);
     }
     const res = await fetch(url, opts);
+    if (!res.ok) {
+        let errMsg = `请求失败 (${res.status})`;
+        try {
+            const errData = await res.json();
+            if (errData.error) errMsg = errData.error;
+        } catch (_) { /* 忽略JSON解析失败 */ }
+        toast(`错误: ${errMsg}`);
+        throw new Error(errMsg);
+    }
     return res.json();
 }
 
