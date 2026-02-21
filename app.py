@@ -152,8 +152,12 @@ def weekly_list():
 @app.route("/api/weekly", methods=["POST"])
 def weekly_add():
     data = request.json
-    year = int(data.get("year")) if data.get("year") is not None else None
-    week = int(data.get("week")) if data.get("week") is not None else None
+    # [AI] 2026-02-21 kxshi: 添加类型转换异常处理，防止无效输入导致500错误
+    try:
+        year = int(data.get("year")) if data.get("year") is not None else None
+        week = int(data.get("week")) if data.get("week") is not None else None
+    except (ValueError, TypeError):
+        return jsonify({"error": "year 和 week 必须为有效整数"}), 400
     mgr = WeeklyManager(year, week)
     tags = data.get("tags", [])
     if isinstance(tags, str):
