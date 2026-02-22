@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "model": "sonnet",
+  "permissions": {
+    "allow": [
+      "Bash(python main.py *)",
+      "Bash(python app.py)",
+      "Bash(pip install *)",
+      "Bash(gh *)",
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(pytest *)",
+      "Skill(fix-github-issue)",
+      "Skill(frontend-design)",
+      "Skill(pdf)",
+      "Skill(pptx)",
+      "Skill(xlsx)",
+      "Skill(docx)",
+      "Skill(canvas-design)",
+      "Skill(algorithmic-art)",
+      "Skill(brand-guidelines)",
+      "Skill(doc-coauthoring)",
+      "Skill(internal-comms)",
+      "Skill(mcp-builder)",
+      "Skill(skill-creator)",
+      "Skill(slack-gif-creator)",
+      "Skill(theme-factory)",
+      "Skill(webapp-testing)",
+      "Skill(web-artifacts-builder)",
+      "Read(.*)",
+      "Edit(.*)",
+      "Write(.*)",
+      "Grep",
+      "Glob"
+    ],
+    "deny": [
+      "Read(.env*)",
+      "Read(*.key)",
+      "Read(secrets/*)",
+      "Bash(rm -rf *)",
+      "Bash(curl *)"
+    ]
+  },
+  "env": {
+    "TASKMANAGER_DIR": "${workspaceRoot}"
+  }
+}
